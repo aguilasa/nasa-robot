@@ -1,4 +1,4 @@
-![](https://github.com/aguilasa/nasa-robot/workflows/test.yml/badge.svg)
+![](https://github.com/aguilasa/nasa-robot/actions/workflows/test.yml/badge.svg)
 
 # Desafio Backend
 
