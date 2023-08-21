@@ -1,3 +1,5 @@
+![](https://github.com/aguilasa/nasa-robot/workflows/tests/badge.svg)
+
 # Desafio Backend
 
 ## Objetivo
