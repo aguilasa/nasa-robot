@@ -48,4 +48,40 @@ class RobotMovementServiceTest {
     void testInvalidPosition() {
         assertThrows(InvalidPositionException.class, () -> robotMovementService.moveRobot("MMMMMMMMMMMMMMMMMMMMMM"));
     }
+
+    @Test
+    void testMoveRobotToEdge() {
+        Robot result = robotMovementService.moveRobot("MMMM");
+        assertEquals("(0, 4, N)", result.toString());
+    }
+
+    @Test
+    void testMoveRobotOutOfEdge() {
+        assertThrows(InvalidPositionException.class, () -> robotMovementService.moveRobot("MMMMMM"));
+    }
+
+    @Test
+    void testMoveRobotTurnRight() {
+        Robot result = robotMovementService.moveRobot("RRRR");
+        assertEquals("(0, 0, N)", result.toString());
+    }
+
+    @Test
+    void testMoveRobotRotateRightAndMove() {
+        Robot result = robotMovementService.moveRobot("RM");
+        assertEquals("(1, 0, E)", result.toString());
+    }
+
+    @Test
+    void testMoveRobotEmptyCommand() {
+        Robot result = robotMovementService.moveRobot("");
+        assertEquals("(0, 0, N)", result.toString());
+    }
+
+    @Test
+    void testMoveRobotSingleMove() {
+        Robot result = robotMovementService.moveRobot("M");
+        assertEquals("(0, 1, N)", result.toString());
+    }
+
 }

@@ -39,6 +39,16 @@ class MarsControllerTest {
     }
 
     @Test
+    void testMoveRobotRight() throws Exception {
+        performAndExpect("/mars/MMR", "(0, 2, E)");
+    }
+
+    @Test
+    void testMoveRobotForward() throws Exception {
+        performAndExpect("/mars/MMM", "(0, 3, N)");
+    }
+
+    @Test
     void testInvalidCommand() throws Exception {
         mockMvc.perform(post("/mars/AAA")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -52,6 +62,39 @@ class MarsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof InvalidPositionException));
+    }
+
+    @Test
+    void testMoveRobotToEdge() throws Exception {
+        performAndExpect("/mars/MMMM", "(0, 4, N)");
+    }
+
+    @Test
+    void testMoveRobotOutOfEdge() throws Exception {
+        mockMvc.perform(post("/mars/MMMMMM")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof InvalidPositionException));
+    }
+
+    @Test
+    void testMoveRobotTurnRight() throws Exception {
+        performAndExpect("/mars/RRRR", "(0, 0, N)");
+    }
+
+    @Test
+    void testMoveRobotRotateRightAndMove() throws Exception {
+        performAndExpect("/mars/RM", "(1, 0, E)");
+    }
+
+    @Test
+    void testMoveRobotEmptyCommand() throws Exception {
+        performAndExpect("/mars/", "(0, 0, N)");
+    }
+
+    @Test
+    void testMoveRobotSingleMove() throws Exception {
+        performAndExpect("/mars/M", "(0, 1, N)");
     }
 
     private void performAndExpect(String path, String expectedOutput) throws Exception {

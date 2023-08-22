@@ -4,7 +4,14 @@ import com.github.aguilasa.nasarobot.dto.Orientation;
 import com.github.aguilasa.nasarobot.dto.Robot;
 import com.github.aguilasa.nasarobot.exceptions.InvalidCommandException;
 import com.github.aguilasa.nasarobot.exceptions.InvalidPositionException;
+import com.github.aguilasa.nasarobot.service.command.Command;
+import com.github.aguilasa.nasarobot.service.command.MoveForwardCommand;
+import com.github.aguilasa.nasarobot.service.command.TurnLeftCommand;
+import com.github.aguilasa.nasarobot.service.command.TurnRightCommand;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RobotMovementService {
@@ -18,29 +25,30 @@ public class RobotMovementService {
                 .orientation(Orientation.N)
                 .build();
 
-        for (char c : command.toCharArray()) {
-            switch (c) {
-                case 'L' -> robot.setOrientation(robot.getOrientation().rotateLeft());
-                case 'R' -> robot.setOrientation(robot.getOrientation().rotateRight());
-                case 'M' -> moveForward(robot);
-                default -> throw new InvalidCommandException("Invalid command: " + c);
-            }
+        List<Command> commands = parseCommands(command, robot);
+
+        for (Command cmd : commands) {
+            cmd.execute();
 
             if (!isValidPosition(robot.getX(), robot.getY())) {
-                throw new InvalidPositionException("Invalid position: " + robot.toString());
+                throw new InvalidPositionException("Invalid position: " + robot);
             }
         }
 
         return robot;
     }
 
-    private void moveForward(Robot robot) {
-        switch (robot.getOrientation()) {
-            case N -> robot.setY(robot.getY() + 1);
-            case S -> robot.setY(robot.getY() - 1);
-            case E -> robot.setX(robot.getX() + 1);
-            case W -> robot.setX(robot.getX() - 1);
+    private List<Command> parseCommands(String command, Robot robot) {
+        List<Command> commands = new ArrayList<>();
+        for (char c : command.toCharArray()) {
+            switch (c) {
+                case 'L' -> commands.add(new TurnLeftCommand(robot));
+                case 'R' -> commands.add(new TurnRightCommand(robot));
+                case 'M' -> commands.add(new MoveForwardCommand(robot));
+                default -> throw new InvalidCommandException("Invalid command: " + c);
+            }
         }
+        return commands;
     }
 
     private boolean isValidPosition(int x, int y) {

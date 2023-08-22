@@ -21,4 +21,9 @@ public class MarsController {
     public ResponseEntity<String> moveRobot(@PathVariable("command") String command) {
         return ResponseEntity.ok(robotMovementService.moveRobot(command).toString());
     }
+
+    @PostMapping()
+    public ResponseEntity<String> moveRobot() {
+        return ResponseEntity.ok(robotMovementService.moveRobot("").toString());
+    }
 }
